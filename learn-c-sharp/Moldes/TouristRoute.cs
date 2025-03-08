@@ -11,7 +11,7 @@
         public DateTime? UpdateTime { get; set; }
         public DateTime? DepartureTime { get; set; }
         public string Features { get; set; }
-        public string Fee { get; set; }
+        public string Fees { get; set; }
         public string Notes { get; set; }
         public ICollection<TouristRoutePicture> TouristRoutePictures { get; set; }
     }

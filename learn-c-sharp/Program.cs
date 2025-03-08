@@ -1,3 +1,5 @@
+using learn_c_sharp.Services;
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -8,6 +10,7 @@ internal class Program
         builder.Services.AddRazorPages();
 
         builder.Services.AddControllers();
+        builder.Services.AddTransient<ITouristRouteRepository, MockTouristRouteRepository>();
 
         var app = builder.Build();
 
