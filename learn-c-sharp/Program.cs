@@ -1,4 +1,6 @@
+using learn_c_sharp.Database;
 using learn_c_sharp.Services;
+using Microsoft.EntityFrameworkCore;
 
 internal class Program
 {
@@ -12,6 +14,14 @@ internal class Program
         builder.Services.AddControllers();
         builder.Services.AddTransient<ITouristRouteRepository, MockTouristRouteRepository>();
 
+        string connectionString = builder.Configuration["DbContext:ConnectionString"] ??
+            throw new InvalidOperationException("Database connection string not found!");
+
+        builder.Services.AddDbContext<AppDbContext>(option =>
+        {
+            option.UseSqlServer(connectionString);
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -24,7 +34,7 @@ internal class Program
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-         
+
         app.UseRouting();
 
         app.UseAuthorization();
