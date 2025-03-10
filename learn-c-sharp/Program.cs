@@ -12,7 +12,7 @@ internal class Program
         builder.Services.AddRazorPages();
 
         builder.Services.AddControllers();
-        builder.Services.AddTransient<ITouristRouteRepository, MockTouristRouteRepository>();
+        builder.Services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
 
         string connectionString = builder.Configuration["DbContext:ConnectionString"] ??
             throw new InvalidOperationException("Database connection string not found!");

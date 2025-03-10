@@ -12,7 +12,7 @@ namespace learn_c_sharp.Controllers
         {
             _touristRouteRepository = touristRouteRepository;
         }
-        public IActionResult GetTouristRoutes()
+        public IActionResult GetTouristRoutes() 
         {
             var routes = _touristRouteRepository.GetTouristRoutes();
             return Ok(routes);
