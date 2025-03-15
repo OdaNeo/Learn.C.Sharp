@@ -12,10 +12,25 @@ namespace learn_c_sharp.Controllers
         {
             _touristRouteRepository = touristRouteRepository;
         }
+        [HttpGet]
         public IActionResult GetTouristRoutes() 
         {
-            var routes = _touristRouteRepository.GetTouristRoutes();
-            return Ok(routes);
+            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes();
+            if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0) 
+            {
+                return NotFound("not found");
+            }
+            return Ok(touristRoutesFromRepo);
+        }
+        [HttpGet("{touristRoueId}")]
+        public IActionResult GetTouristRouteById(Guid touristRoueId)
+        {
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
+            if (touristRouteFromRepo == null)
+            {
+                return NotFound("not found");
+            }
+            return Ok(touristRouteFromRepo);
         }
     }
 }
