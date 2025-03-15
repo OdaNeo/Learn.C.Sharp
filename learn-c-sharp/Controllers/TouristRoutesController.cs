@@ -1,4 +1,6 @@
-﻿using learn_c_sharp.Services;
+﻿using AutoMapper;
+using learn_c_sharp.Dtos;
+using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace learn_c_sharp.Controllers
@@ -8,9 +10,11 @@ namespace learn_c_sharp.Controllers
     public class TouristRoutesController : ControllerBase
     {
         private ITouristRouteRepository _touristRouteRepository;
-        public TouristRoutesController(ITouristRouteRepository touristRouteRepository)
+        private readonly IMapper _mapper;
+        public TouristRoutesController(ITouristRouteRepository touristRouteRepository,IMapper mapper)
         {
             _touristRouteRepository = touristRouteRepository;
+            _mapper = mapper;
         }
         [HttpGet]
         public IActionResult GetTouristRoutes() 
@@ -20,7 +24,8 @@ namespace learn_c_sharp.Controllers
             {
                 return NotFound("not found");
             }
-            return Ok(touristRoutesFromRepo);
+            var touristRoutesDto = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
+            return Ok(touristRoutesDto);
         }
         [HttpGet("{touristRoueId}")]
         public IActionResult GetTouristRouteById(Guid touristRoueId)
@@ -30,7 +35,24 @@ namespace learn_c_sharp.Controllers
             {
                 return NotFound("not found");
             }
-            return Ok(touristRouteFromRepo);
-        }
+            //var touristRouteDto = new TouristRouteDto()
+            //{
+            //    Id = touristRouteFromRepo.Id,
+            //    Title = touristRouteFromRepo.Title,
+            //    Description = touristRouteFromRepo.Description,
+            //    Price = touristRouteFromRepo.OriginalPrice * (decimal)(touristRouteFromRepo.DiscountPresent ?? 1),
+            //    CreateTime = touristRouteFromRepo.CreateTime,
+            //    UpdateTime = touristRouteFromRepo.UpdateTime,
+            //    Features = touristRouteFromRepo.Features,
+            //    Fees = touristRouteFromRepo.Fees,
+            //    Notes = touristRouteFromRepo.Notes,
+            //    Rating = touristRouteFromRepo.Rating,
+            //    TravelDays = touristRouteFromRepo.TravelDays.ToString(),
+            //    TripType = touristRouteFromRepo.TripType.ToString(),
+            //    DepartureCity = touristRouteFromRepo.DepartureCity.ToString(),
+            //};
+            var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
+            return Ok(touristRouteDto);
+        } 
     }
 }

@@ -1,21 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FakeXiecheng.API.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace learn_c_sharp.Moldes
+namespace learn_c_sharp.Models
 {
     public class TouristRoute
     {
         [Key]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(100)] 
+        [MaxLength(100)]
         public string Title { get; set; }
         [Required]
         [MaxLength(1500)]
         public string Description { get; set; }
-        [Column(TypeName ="decimal(18, 2)")]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal OriginalPrice { get; set; }
-        [Range(0.0,1.0)]
+        [Range(0.0, 1.0)]
         public double? DiscountPresent { get; set; }
         public DateTime CreateTime { get; set; }
         public DateTime? UpdateTime { get; set; }
@@ -26,7 +27,11 @@ namespace learn_c_sharp.Moldes
         public string Fees { get; set; }
         [MaxLength]
         public string Notes { get; set; }
-        public ICollection<TouristRoutePicture> TouristRoutePictures { get; set; } 
+        public double Rating { get; set; }
+        public TravelDays? TravelDays { get; set; }
+        public TripType? TripType { get; set; }
+        public DepartureCity? DepartureCity { get; set; }
+        public ICollection<TouristRoutePicture> TouristRoutePictures { get; set; }
             = new List<TouristRoutePicture>();
     }
 }

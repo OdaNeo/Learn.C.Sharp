@@ -11,7 +11,13 @@ internal class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers((setupAction) => {
+            setupAction.ReturnHttpNotAcceptable = true;
+            //setupAction.OutputFormatters.Add(
+            //    new XmlDataContractSerializerOutputFormatter()
+            //);
+        }).AddXmlDataContractSerializerFormatters();
+
         builder.Services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
 
         string connectionString = builder.Configuration["DbContext:ConnectionString"] ??
@@ -21,6 +27,8 @@ internal class Program
         {
             option.UseSqlServer(connectionString);
         });
+
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         var app = builder.Build();
 
