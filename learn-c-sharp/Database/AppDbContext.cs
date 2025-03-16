@@ -12,7 +12,7 @@ namespace learn_c_sharp.Database
         }
 
         public DbSet<TouristRoute> TouristRouts { set; get; }
-        public DbSet<TouristRoutePicture> touristRoutePictures { set; get; }
+        public DbSet<TouristRoutePicture> TouristRoutePictures { set; get; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var touristRouteJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + 

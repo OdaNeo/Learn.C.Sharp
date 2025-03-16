@@ -17,6 +17,7 @@ namespace learn_c_sharp.Controllers
             _mapper = mapper;
         }
         [HttpGet]
+        [HttpHead]
         public IActionResult GetTouristRoutes() 
         {
             var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes();
@@ -28,6 +29,7 @@ namespace learn_c_sharp.Controllers
             return Ok(touristRoutesDto);
         }
         [HttpGet("{touristRoueId}")]
+        [HttpHead]
         public IActionResult GetTouristRouteById(Guid touristRoueId)
         {
             var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
