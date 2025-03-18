@@ -4,22 +4,22 @@ using learn_c_sharp.Models;
 
 namespace learn_c_sharp.Profiles
 {
-    public class TouristRouteProfile:Profile
+    public class TouristRouteProfile : Profile
     {
-        public TouristRouteProfile() 
+        public TouristRouteProfile()
         {
             CreateMap<TouristRoute, TouristRouteDto>()
                 .ForMember(
-                    dest=>dest.Price,
-                    opt=>opt.MapFrom(src=>src.OriginalPrice * (decimal)(src.DiscountPresent?? 1))
+                    dest => dest.Price,
+                    opt => opt.MapFrom(src => src.OriginalPrice * (decimal)(src.DiscountPresent ?? 1))
                 )
                 .ForMember(
-                    dest=>dest.TravelDays,
-                    opt=>opt.MapFrom(src=>src.TravelDays.ToString())
+                    dest => dest.TravelDays,
+                    opt => opt.MapFrom(src => src.TravelDays.ToString())
                 )
                 .ForMember(
-                    dest=>dest.TripType,
-                    opt=>opt.MapFrom(src=>src.TripType.ToString())
+                    dest => dest.TripType,
+                    opt => opt.MapFrom(src => src.TripType.ToString())
                 )
                 .ForMember(
                     dest => dest.DepartureCity,

@@ -1,9 +1,4 @@
-﻿using FakeXiecheng.API.Models;
-using learn_c_sharp.Models;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
-namespace learn_c_sharp.Dtos
+﻿namespace learn_c_sharp.Dtos
 {
     public class TouristRouteDto
     {

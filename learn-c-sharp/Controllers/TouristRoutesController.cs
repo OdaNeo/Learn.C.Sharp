@@ -11,17 +11,17 @@ namespace learn_c_sharp.Controllers
     {
         private ITouristRouteRepository _touristRouteRepository;
         private readonly IMapper _mapper;
-        public TouristRoutesController(ITouristRouteRepository touristRouteRepository,IMapper mapper)
+        public TouristRoutesController(ITouristRouteRepository touristRouteRepository, IMapper mapper)
         {
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
         }
         [HttpGet]
         [HttpHead]
-        public IActionResult GetTouristRoutes() 
+        public IActionResult GetTouristRoutes([FromQuery] string keyword , string rating)
         {
-            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes();
-            if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0) 
+            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes(keyword);
+            if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
                 return NotFound("not found");
             }
@@ -55,6 +55,6 @@ namespace learn_c_sharp.Controllers
             //};
             var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
             return Ok(touristRouteDto);
-        } 
+        }
     }
 }

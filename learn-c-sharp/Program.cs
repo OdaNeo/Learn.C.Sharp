@@ -11,7 +11,8 @@ internal class Program
         // Add services to the container.
         builder.Services.AddRazorPages();
 
-        builder.Services.AddControllers((setupAction) => {
+        builder.Services.AddControllers((setupAction) =>
+        {
             setupAction.ReturnHttpNotAcceptable = true;
             //setupAction.OutputFormatters.Add(
             //    new XmlDataContractSerializerOutputFormatter()

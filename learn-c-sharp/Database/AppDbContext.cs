@@ -1,11 +1,11 @@
 ﻿using learn_c_sharp.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace learn_c_sharp.Database
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -15,7 +15,7 @@ namespace learn_c_sharp.Database
         public DbSet<TouristRoutePicture> TouristRoutePictures { set; get; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var touristRouteJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + 
+            var touristRouteJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                 @"/Database/touristRoutesMockData.json");
             IList<TouristRoute> touristRoutes = JsonConvert.DeserializeObject<IList<TouristRoute>>(touristRouteJsonData);
             modelBuilder.Entity<TouristRoute>().HasData(touristRoutes);
@@ -25,7 +25,7 @@ namespace learn_c_sharp.Database
             IList<TouristRoutePicture> touristPictureRoutes = JsonConvert.DeserializeObject<IList<TouristRoutePicture>>(touristRoutePictureJsonData);
             modelBuilder.Entity<TouristRoutePicture>().HasData(touristPictureRoutes);
 
-            base.OnModelCreating(modelBuilder); 
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

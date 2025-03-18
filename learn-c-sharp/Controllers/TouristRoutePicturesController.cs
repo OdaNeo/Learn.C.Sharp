@@ -42,7 +42,7 @@ namespace learn_c_sharp.Controllers
             {
                 return NotFound("not found");
             }
-            return Ok(_mapper.Map<TouristRoutePictureDto>(pictureFromRepo)); 
+            return Ok(_mapper.Map<TouristRoutePictureDto>(pictureFromRepo));
         }
     }
 }
