@@ -19,7 +19,7 @@ namespace learn_c_sharp.Services
             return _context.TouristRouts.Include(t => t.TouristRoutePictures).FirstOrDefault(n => n.Id == touristRouteId);
         }
 
-        public IEnumerable<TouristRoute> GetTouristRoutes(string keyword)
+        public IEnumerable<TouristRoute> GetTouristRoutes(string keyword, string ratingOperator, int? ratingValue)
         {
             // 延迟执行
             IQueryable<TouristRoute> result = _context
@@ -30,6 +30,23 @@ namespace learn_c_sharp.Services
             {
                 keyword = keyword.Trim();
                 result = result.Where((t) => t.Title.Contains(keyword));
+            }
+            if (ratingValue >= 0)
+            {
+                switch (ratingOperator)
+                {
+                    case "largerThan":
+                        result = result.Where(t => t.Rating >= ratingValue);
+                        break;
+                    case "lessThan":
+                        result = result.Where(t => t.Rating <= ratingValue);
+                        break;
+                    case "equalTo":
+                    default:
+                        result = result.Where(t => t.Rating == ratingValue);
+                        break;
+                }
+
             }
             //立即执行
             return result.ToList();

@@ -4,7 +4,7 @@ namespace learn_c_sharp.Services
 {
     public interface ITouristRouteRepository
     {
-        IEnumerable<TouristRoute> GetTouristRoutes(string keyword);
+        IEnumerable<TouristRoute> GetTouristRoutes(string keyword, string ratingOperator, int? ratingValue);
         TouristRoute GetTouristRoute(Guid touristRouteId);
         bool TouristRouteExists(Guid touristRouteId);
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using learn_c_sharp.Dtos;
+using learn_c_sharp.ResourceParameters;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,10 @@ namespace learn_c_sharp.Controllers
         }
         [HttpGet]
         [HttpHead]
-        public IActionResult GetTouristRoutes([FromQuery] string keyword , string rating)
+        public IActionResult GetTouristRoutes([FromQuery] TouristRouteResoureceParamaters paramates)//Core 3.x 以上，需要加问号
         {
-            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes(keyword);
+
+            var touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutes(paramates.Keyword, paramates.RatingOperator, paramates.RatingValue);
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
                 return NotFound("not found");
