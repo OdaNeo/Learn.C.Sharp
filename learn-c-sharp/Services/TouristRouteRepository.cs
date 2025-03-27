@@ -64,6 +64,18 @@ namespace learn_c_sharp.Services
         {
             return _context.TouristRoutePictures.Where(p => p.Id == pictureId).FirstOrDefault();
         }
+        public void AddTouristRoute(TouristRoute touristRoute)
+        {
+            if (touristRoute == null)
+            {
+                throw new ArgumentNullException(nameof(touristRoute));
+            }
+            _context.TouristRouts.Add(touristRoute);
+        }
+        public bool Save()
+        {
+            return (_context.SaveChanges() >= 0);
+        }
 
     }
 }

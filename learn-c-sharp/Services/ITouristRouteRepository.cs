@@ -10,5 +10,7 @@ namespace learn_c_sharp.Services
 
         IEnumerable<TouristRoutePicture> GetPicturesByTouristRouteId(Guid touristRouteId);
         TouristRoutePicture GetPicture(int pictureId);
+        void AddTouristRoute(TouristRoute touristRoute);
+        bool Save();
     }
 }

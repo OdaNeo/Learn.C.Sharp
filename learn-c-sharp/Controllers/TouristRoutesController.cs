@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using learn_c_sharp.Dtos;
+using learn_c_sharp.Models;
 using learn_c_sharp.ResourceParameters;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ namespace learn_c_sharp.Controllers
             var touristRoutesDto = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
             return Ok(touristRoutesDto);
         }
-        [HttpGet("{touristRoueId}")]
+        [HttpGet("{touristRoueId}", Name = "GetTouristRouteById")]
         [HttpHead]
         public IActionResult GetTouristRouteById(Guid touristRoueId)
         {
@@ -57,6 +58,16 @@ namespace learn_c_sharp.Controllers
             //};
             var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
             return Ok(touristRouteDto);
+        }
+        [HttpPost]
+        public IActionResult CreateTouristRoute([FromBody] TouristRouteForCreationDto touristRouteForCreationDto)
+        {
+            var touristRouteModel = _mapper.Map<TouristRoute>(touristRouteForCreationDto);
+            _touristRouteRepository.AddTouristRoute(touristRouteModel);
+            _touristRouteRepository.Save();
+            var touristRouteToReturn = _mapper.Map<TouristRouteDto>(touristRouteModel);
+            return CreatedAtRoute("GetTouristRouteById", new { touristRoueId = touristRouteToReturn.Id }, touristRouteToReturn);
+
         }
     }
 }
