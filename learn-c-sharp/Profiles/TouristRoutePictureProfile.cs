@@ -9,6 +9,7 @@ namespace learn_c_sharp.Profiles
         public TouristRoutePictureProfile()
         {
             CreateMap<TouristRoutePicture, TouristRoutePictureDto>();
+            CreateMap<TouristRoutePictureFroCreationDto, TouristRoutePicture>();
         }
     }
 }

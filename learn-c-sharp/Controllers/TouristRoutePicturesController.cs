@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using learn_c_sharp.Dtos;
+using learn_c_sharp.Models;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,7 +31,7 @@ namespace learn_c_sharp.Controllers
             }
             return Ok(_mapper.Map<IEnumerable<TouristRoutePictureDto>>(pictureFromRepo));
         }
-        [HttpGet("{pictureId}")]
+        [HttpGet("{pictureId}", Name = "GetPicture")]
         public IActionResult GetPicture(Guid touristRouteId, int pictureId)
         {
             if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
@@ -44,5 +45,22 @@ namespace learn_c_sharp.Controllers
             }
             return Ok(_mapper.Map<TouristRoutePictureDto>(pictureFromRepo));
         }
+        [HttpPost]
+        public IActionResult CreateTouristRoutePicture(
+            [FromRoute] Guid touristRouteId,
+            [FromBody] TouristRoutePictureFroCreationDto touristRoutePictureFroCreateDto)
+        {
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            {
+                return NotFound("not found");
+            }
+            var pictureModel = _mapper.Map<TouristRoutePicture>(touristRoutePictureFroCreateDto);
+            _touristRouteRepository.AddTouristRoutePicture(touristRouteId, pictureModel);
+            _touristRouteRepository.Save();
+            var pictureToReturn = _mapper.Map<TouristRoutePictureDto>(pictureModel);
+            return CreatedAtRoute(
+                "GetPicture", new { touristRouteId = pictureModel.TouristRouteId, pictureId = pictureModel.Id }, pictureToReturn);
+        }
+
     }
 }

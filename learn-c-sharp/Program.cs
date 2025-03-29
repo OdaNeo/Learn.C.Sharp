@@ -1,5 +1,6 @@
 using learn_c_sharp.Database;
 using learn_c_sharp.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 internal class Program
@@ -17,7 +18,27 @@ internal class Program
             //setupAction.OutputFormatters.Add(
             //    new XmlDataContractSerializerOutputFormatter()
             //);
-        }).AddXmlDataContractSerializerFormatters();
+        })
+            .AddXmlDataContractSerializerFormatters()
+            .ConfigureApiBehaviorOptions(setupAction =>
+            {
+                setupAction.InvalidModelStateResponseFactory = context =>
+                {
+                    var problemDetail = new ValidationProblemDetails(context.ModelState)
+                    {
+                        Type = "wusuowei",
+                        Title = "validat falied",
+                        Status = StatusCodes.Status422UnprocessableEntity,
+                        Detail = "see detail",
+                        Instance = context.HttpContext.Request.Path
+                    };
+                    problemDetail.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
+                    return new UnprocessableEntityObjectResult(problemDetail)
+                    {
+                        ContentTypes = { "application/problem+json" }
+                    };
+                };
+            });
 
         builder.Services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
 
