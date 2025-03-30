@@ -10,7 +10,7 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        builder.Services.AddRazorPages();
+        //builder.Services.AddRazorPages();
 
         builder.Services.AddControllers((setupAction) =>
         {
@@ -72,7 +72,7 @@ internal class Program
 
         app.MapControllers();
 
-        app.MapRazorPages();
+        //app.MapRazorPages();
 
         app.Run();
     }

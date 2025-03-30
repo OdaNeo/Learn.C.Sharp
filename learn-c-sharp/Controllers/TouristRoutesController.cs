@@ -69,5 +69,20 @@ namespace learn_c_sharp.Controllers
             return CreatedAtRoute("GetTouristRouteById", new { touristRoueId = touristRouteToReturn.Id }, touristRouteToReturn);
 
         }
+        [HttpPut("{touristRoueId}")]
+        public IActionResult UpdateTouristRoute([FromRoute] Guid touristRoueId, [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto)
+        {
+            if (!_touristRouteRepository.TouristRouteExists(touristRoueId))
+            {
+                return NotFound("not found");
+            }
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
+            // 映射Dto
+            // 更新Dto
+            // 映射model
+            _mapper.Map(touristRouteForUpdateDto, touristRouteFromRepo);
+            _touristRouteRepository.Save();
+            return NoContent();
+        }
     }
 }
