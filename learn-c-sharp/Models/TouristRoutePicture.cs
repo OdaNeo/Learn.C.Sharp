@@ -9,9 +9,9 @@ namespace learn_c_sharp.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [MaxLength(100)]
-        public string Url { get; set; }
+        public required string Url { get; set; }
         [ForeignKey("TouristRouteId")]
         public Guid TouristRouteId { get; set; }
-        public TouristRoute TouristRoute { get; set; }
+        public required TouristRoute TouristRoute { get; set; }
     }
 }

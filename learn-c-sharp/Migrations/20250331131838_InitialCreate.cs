@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace learn_c_sharp.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,7 @@ namespace learn_c_sharp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "touristRoutePictures",
+                name: "TouristRoutePictures",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -49,9 +49,9 @@ namespace learn_c_sharp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_touristRoutePictures", x => x.Id);
+                    table.PrimaryKey("PK_TouristRoutePictures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_touristRoutePictures_TouristRouts_TouristRouteId",
+                        name: "FK_TouristRoutePictures_TouristRouts_TouristRouteId",
                         column: x => x.TouristRouteId,
                         principalTable: "TouristRouts",
                         principalColumn: "Id",
@@ -82,7 +82,7 @@ namespace learn_c_sharp.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "touristRoutePictures",
+                table: "TouristRoutePictures",
                 columns: new[] { "Id", "TouristRouteId", "Url" },
                 values: new object[,]
                 {
@@ -157,8 +157,8 @@ namespace learn_c_sharp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_touristRoutePictures_TouristRouteId",
-                table: "touristRoutePictures",
+                name: "IX_TouristRoutePictures_TouristRouteId",
+                table: "TouristRoutePictures",
                 column: "TouristRouteId");
         }
 
@@ -166,7 +166,7 @@ namespace learn_c_sharp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "touristRoutePictures");
+                name: "TouristRoutePictures");
 
             migrationBuilder.DropTable(
                 name: "TouristRouts");

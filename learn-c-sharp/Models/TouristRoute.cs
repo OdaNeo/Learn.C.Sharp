@@ -10,10 +10,10 @@ namespace learn_c_sharp.Models
         public Guid Id { get; set; }
         [Required]
         [MaxLength(100)]
-        public string Title { get; set; }
+        public required string Title { get; set; }
         [Required]
         [MaxLength(1500)]
-        public string Description { get; set; }
+        public required string Description { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal OriginalPrice { get; set; }
         [Range(0.0, 1.0)]
@@ -22,11 +22,11 @@ namespace learn_c_sharp.Models
         public DateTime? UpdateTime { get; set; }
         public DateTime? DepartureTime { get; set; }
         [MaxLength]
-        public string Features { get; set; }
+        public required string Features { get; set; }
         [MaxLength]
-        public string Fees { get; set; }
+        public required string Fees { get; set; }
         [MaxLength]
-        public string Notes { get; set; }
+        public required string Notes { get; set; }
         public double Rating { get; set; }
         public TravelDays? TravelDays { get; set; }
         public TripType? TripType { get; set; }

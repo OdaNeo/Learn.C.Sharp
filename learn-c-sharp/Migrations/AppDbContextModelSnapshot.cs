@@ -346,7 +346,7 @@ namespace learn_c_sharp.Migrations
 
                     b.HasIndex("TouristRouteId");
 
-                    b.ToTable("touristRoutePictures");
+                    b.ToTable("TouristRoutePictures");
 
                     b.HasData(
                         new

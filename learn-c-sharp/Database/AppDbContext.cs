@@ -17,12 +17,12 @@ namespace learn_c_sharp.Database
         {
             var touristRouteJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                 @"/Database/touristRoutesMockData.json");
-            IList<TouristRoute> touristRoutes = JsonConvert.DeserializeObject<IList<TouristRoute>>(touristRouteJsonData);
+            IList<TouristRoute> touristRoutes = JsonConvert.DeserializeObject<IList<TouristRoute>>(touristRouteJsonData)!;
             modelBuilder.Entity<TouristRoute>().HasData(touristRoutes);
 
             var touristRoutePictureJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                 @"/Database/touristRoutePicturesMockData.json");
-            IList<TouristRoutePicture> touristPictureRoutes = JsonConvert.DeserializeObject<IList<TouristRoutePicture>>(touristRoutePictureJsonData);
+            IList<TouristRoutePicture> touristPictureRoutes = JsonConvert.DeserializeObject<IList<TouristRoutePicture>>(touristRoutePictureJsonData)!;
             modelBuilder.Entity<TouristRoutePicture>().HasData(touristPictureRoutes);
 
             base.OnModelCreating(modelBuilder);
