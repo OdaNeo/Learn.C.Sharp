@@ -29,7 +29,9 @@ namespace learn_c_sharp.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("DepartureCity")
                         .HasColumnType("int");

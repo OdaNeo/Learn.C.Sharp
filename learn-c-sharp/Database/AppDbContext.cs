@@ -19,6 +19,9 @@ namespace learn_c_sharp.Database
                 @"/Database/touristRoutesMockData.json");
             IList<TouristRoute> touristRoutes = JsonConvert.DeserializeObject<IList<TouristRoute>>(touristRouteJsonData)!;
             modelBuilder.Entity<TouristRoute>().HasData(touristRoutes);
+            modelBuilder.Entity<TouristRoute>()
+               .Property(tr => tr.CreateTime)
+               .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             var touristRoutePictureJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                 @"/Database/touristRoutePicturesMockData.json");

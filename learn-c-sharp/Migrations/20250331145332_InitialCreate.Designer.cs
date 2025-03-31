@@ -12,7 +12,7 @@ using learn_c_sharp.Database;
 namespace learn_c_sharp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250331131838_InitialCreate")]
+    [Migration("20250331145332_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,7 +32,9 @@ namespace learn_c_sharp.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int?>("DepartureCity")
                         .HasColumnType("int");
