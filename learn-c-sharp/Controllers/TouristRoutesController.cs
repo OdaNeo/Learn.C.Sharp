@@ -3,6 +3,7 @@ using learn_c_sharp.Dtos;
 using learn_c_sharp.Models;
 using learn_c_sharp.ResourceParameters;
 using learn_c_sharp.Services;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace learn_c_sharp.Controllers
@@ -82,6 +83,27 @@ namespace learn_c_sharp.Controllers
             // 映射model
             _mapper.Map(touristRouteForUpdateDto, touristRouteFromRepo);
             _touristRouteRepository.Save();
+            return NoContent();
+        }
+        [HttpPatch("{touristRoueId}")]
+        public IActionResult PartiallyUpdateTouristRoute(
+            [FromRoute] Guid touristRoueId,
+            [FromBody] JsonPatchDocument<TouristRouteForUpdateDto> jsonPatchDocument)
+        {
+            if (!_touristRouteRepository.TouristRouteExists(touristRoueId))
+            {
+                return NotFound("not found");
+            }
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
+            var touristRouteToPatch = _mapper.Map<TouristRouteForUpdateDto>(touristRouteFromRepo);
+            jsonPatchDocument.ApplyTo(touristRouteToPatch, ModelState);
+            if (!TryValidateModel(touristRouteToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+            _mapper.Map(touristRouteToPatch, touristRouteFromRepo);
+            _touristRouteRepository.Save();
+
             return NoContent();
         }
     }

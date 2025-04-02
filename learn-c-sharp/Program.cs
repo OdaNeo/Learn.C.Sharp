@@ -2,6 +2,7 @@ using learn_c_sharp.Database;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Serialization;
 
 internal class Program
 {
@@ -19,6 +20,10 @@ internal class Program
             //    new XmlDataContractSerializerOutputFormatter()
             //);
         })
+            .AddNewtonsoftJson(setupAction =>
+            {
+                setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            })
             .AddXmlDataContractSerializerFormatters()
             .ConfigureApiBehaviorOptions(setupAction =>
             {

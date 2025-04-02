@@ -31,6 +31,7 @@ namespace learn_c_sharp.Profiles
                     opt => opt.MapFrom(src => Guid.NewGuid())
                 );
             CreateMap<TouristRouteForUpdateDto, TouristRoute>();
+            CreateMap<TouristRoute, TouristRouteForUpdateDto>();
         }
     }
 }
