@@ -64,6 +64,10 @@ namespace learn_c_sharp.Services
         {
             return _context.TouristRoutePictures.Where(p => p.Id == pictureId).FirstOrDefault();
         }
+        public IEnumerable<TouristRoute> GetTouristRoutesByIDList(IEnumerable<Guid> ids)
+        {
+            return _context.TouristRouts.Where(t => ids.Contains(t.Id)).ToList();
+        }
         public void AddTouristRoute(TouristRoute touristRoute)
         {
             if (touristRoute == null)
@@ -82,8 +86,21 @@ namespace learn_c_sharp.Services
             {
                 throw new ArgumentNullException(nameof(touristRoutePicture));
             }
-            touristRoutePicture.TouristRouteId=touristRouteId;
+            touristRoutePicture.TouristRouteId = touristRouteId;
             _context.TouristRoutePictures.Add(touristRoutePicture);
+        }
+
+        public void DeleteTouristRoute(TouristRoute touristRoute)
+        {
+            _context.TouristRouts.Remove(touristRoute);
+        }
+        public void DeleteTouristRoutes(IEnumerable<TouristRoute> touristRoutes)
+        {
+            _context.TouristRouts.RemoveRange(touristRoutes);
+        }
+        public void DeleteTouristRoutePicture(TouristRoutePicture touristRoutePicture)
+        {
+            _context.TouristRoutePictures.Remove(touristRoutePicture);
         }
         public bool Save()
         {

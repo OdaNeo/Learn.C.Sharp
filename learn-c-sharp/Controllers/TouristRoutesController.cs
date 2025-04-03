@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using learn_c_sharp.Dtos;
+using learn_c_sharp.Helper;
 using learn_c_sharp.Models;
 using learn_c_sharp.ResourceParameters;
 using learn_c_sharp.Services;
@@ -32,11 +33,11 @@ namespace learn_c_sharp.Controllers
             var touristRoutesDto = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
             return Ok(touristRoutesDto);
         }
-        [HttpGet("{touristRoueId}", Name = "GetTouristRouteById")]
+        [HttpGet("{touristRouteId}", Name = "GetTouristRouteById")]
         [HttpHead]
-        public IActionResult GetTouristRouteById(Guid touristRoueId)
+        public IActionResult GetTouristRouteById(Guid touristRouteId)
         {
-            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
             if (touristRouteFromRepo == null)
             {
                 return NotFound("not found");
@@ -67,17 +68,17 @@ namespace learn_c_sharp.Controllers
             _touristRouteRepository.AddTouristRoute(touristRouteModel);
             _touristRouteRepository.Save();
             var touristRouteToReturn = _mapper.Map<TouristRouteDto>(touristRouteModel);
-            return CreatedAtRoute("GetTouristRouteById", new { touristRoueId = touristRouteToReturn.Id }, touristRouteToReturn);
+            return CreatedAtRoute("GetTouristRouteById", new { touristRouteId = touristRouteToReturn.Id }, touristRouteToReturn);
 
         }
-        [HttpPut("{touristRoueId}")]
-        public IActionResult UpdateTouristRoute([FromRoute] Guid touristRoueId, [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto)
+        [HttpPut("{touristRouteId}")]
+        public IActionResult UpdateTouristRoute([FromRoute] Guid touristRouteId, [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto)
         {
-            if (!_touristRouteRepository.TouristRouteExists(touristRoueId))
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
             {
                 return NotFound("not found");
             }
-            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
             // 映射Dto
             // 更新Dto
             // 映射model
@@ -85,16 +86,16 @@ namespace learn_c_sharp.Controllers
             _touristRouteRepository.Save();
             return NoContent();
         }
-        [HttpPatch("{touristRoueId}")]
+        [HttpPatch("{touristRouteId}")]
         public IActionResult PartiallyUpdateTouristRoute(
-            [FromRoute] Guid touristRoueId,
+            [FromRoute] Guid touristRouteId,
             [FromBody] JsonPatchDocument<TouristRouteForUpdateDto> jsonPatchDocument)
         {
-            if (!_touristRouteRepository.TouristRouteExists(touristRoueId))
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
             {
                 return NotFound("not found");
             }
-            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRoueId);
+            var touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
             var touristRouteToPatch = _mapper.Map<TouristRouteForUpdateDto>(touristRouteFromRepo);
             jsonPatchDocument.ApplyTo(touristRouteToPatch, ModelState);
             if (!TryValidateModel(touristRouteToPatch))
@@ -102,6 +103,32 @@ namespace learn_c_sharp.Controllers
                 return ValidationProblem(ModelState);
             }
             _mapper.Map(touristRouteToPatch, touristRouteFromRepo);
+            _touristRouteRepository.Save();
+
+            return NoContent();
+        }
+        [HttpDelete("{touristRouteId}")]
+        public IActionResult DeleteTouristRoute([FromRoute] Guid touristRouteId)
+        {
+            if (!_touristRouteRepository.TouristRouteExists(touristRouteId))
+            {
+                return NotFound("not found");
+            }
+            var _touristRouteFromRepo = _touristRouteRepository.GetTouristRoute(touristRouteId);
+            _touristRouteRepository.DeleteTouristRoute(_touristRouteFromRepo);
+            _touristRouteRepository.Save();
+
+            return NoContent();
+        }
+        [HttpDelete("({touristIDs})")]
+        public IActionResult DeleteByIDs([ModelBinder(BinderType = typeof(ArrayModelBinder))][FromRoute] IEnumerable<Guid> touristIDs)
+        {
+            if (touristIDs == null)
+            {
+                return BadRequest();
+            }
+            var _touristRoutesFromRepo = _touristRouteRepository.GetTouristRoutesByIDList(touristIDs);
+            _touristRouteRepository.DeleteTouristRoutes(_touristRoutesFromRepo);
             _touristRouteRepository.Save();
 
             return NoContent();
