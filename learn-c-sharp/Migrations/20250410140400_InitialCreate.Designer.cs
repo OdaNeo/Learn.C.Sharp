@@ -12,7 +12,7 @@ using learn_c_sharp.Database;
 namespace learn_c_sharp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250331145332_InitialCreate")]
+    [Migration("20250410140400_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

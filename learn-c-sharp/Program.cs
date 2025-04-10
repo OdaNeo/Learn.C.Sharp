@@ -1,8 +1,11 @@
 using learn_c_sharp.Database;
 using learn_c_sharp.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using System.Text;
 
 internal class Program
 {
@@ -12,13 +15,29 @@ internal class Program
 
         // Add services to the container.
         //builder.Services.AddRazorPages();
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                var secretByte = Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"]!);
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["Authentication:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["Authentication:Audience"],
+
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(secretByte)
+                };
+            });
 
         builder.Services.AddControllers((setupAction) =>
         {
             setupAction.ReturnHttpNotAcceptable = true;
             //setupAction.OutputFormatters.Add(
             //    new XmlDataContractSerializerOutputFormatter()
-            //);
+            //);   
         })
             .AddNewtonsoftJson(setupAction =>
             {
@@ -71,6 +90,8 @@ internal class Program
         app.UseStaticFiles();
 
         app.UseRouting();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 

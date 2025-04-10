@@ -4,6 +4,7 @@ using learn_c_sharp.Helper;
 using learn_c_sharp.Models;
 using learn_c_sharp.ResourceParameters;
 using learn_c_sharp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
@@ -62,6 +63,7 @@ namespace learn_c_sharp.Controllers
             return Ok(touristRouteDto);
         }
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateTouristRoute([FromBody] TouristRouteForCreationDto touristRouteForCreationDto)
         {
             var touristRouteModel = _mapper.Map<TouristRoute>(touristRouteForCreationDto);
@@ -71,7 +73,7 @@ namespace learn_c_sharp.Controllers
             return CreatedAtRoute("GetTouristRouteById", new { touristRouteId = touristRouteToReturn.Id }, touristRouteToReturn);
 
         }
-        [HttpPut("{touristRouteId}")] 
+        [HttpPut("{touristRouteId}")]
         public async Task<IActionResult> UpdateTouristRoute([FromRoute] Guid touristRouteId, [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto)
         {
             if (!(await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId)))
