@@ -1,18 +1,20 @@
 ﻿using learn_c_sharp.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Reflection;
 
 namespace learn_c_sharp.Database
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<IdentityUser> //DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
 
-        public DbSet<TouristRoute> TouristRouts { set; get; }
-        public DbSet<TouristRoutePicture> TouristRoutePictures { set; get; }
+        public DbSet<TouristRoute> TouristRouts { set; get; } 
+        public DbSet<TouristRoutePicture> TouristRoutePictures { set; get; } 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var touristRouteJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
