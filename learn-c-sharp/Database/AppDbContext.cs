@@ -15,6 +15,8 @@ namespace learn_c_sharp.Database
 
         public DbSet<TouristRoute> TouristRouts { set; get; }
         public DbSet<TouristRoutePicture> TouristRoutePictures { set; get; }
+        public DbSet<ShoppingCart> ShoppingCarts { set; get; }
+        public DbSet<LineItem> LineItems { set; get; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var touristRouteJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
