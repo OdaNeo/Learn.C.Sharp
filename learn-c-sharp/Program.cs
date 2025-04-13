@@ -1,4 +1,5 @@
 using learn_c_sharp.Database;
+using learn_c_sharp.Models;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +17,7 @@ internal class Program
 
         // Add services to the container.
         //builder.Services.AddRazorPages();
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<AppDbContext>();
 
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

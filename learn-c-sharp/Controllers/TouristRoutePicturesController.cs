@@ -2,6 +2,7 @@
 using learn_c_sharp.Dtos;
 using learn_c_sharp.Models;
 using learn_c_sharp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace learn_c_sharp.Controllers
@@ -46,6 +47,8 @@ namespace learn_c_sharp.Controllers
             return Ok(_mapper.Map<TouristRoutePictureDto>(pictureFromRepo));
         }
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTouristRoutePicture(
             [FromRoute] Guid touristRouteId,
             [FromBody] TouristRoutePictureFroCreationDto touristRoutePictureFroCreateDto)
@@ -62,6 +65,8 @@ namespace learn_c_sharp.Controllers
                 "GetPicture", new { touristRouteId = pictureModel.TouristRouteId, pictureId = pictureModel.Id }, pictureToReturn);
         }
         [HttpDelete("{pictureId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePicture([FromRoute] Guid touristRouteId, [FromRoute] int pictureId)
         {
             if (!(await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId)))

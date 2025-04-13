@@ -63,6 +63,7 @@ namespace learn_c_sharp.Controllers
             return Ok(touristRouteDto); 
         }
         [HttpPost]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTouristRoute([FromBody] TouristRouteForCreationDto touristRouteForCreationDto)
         {
@@ -74,6 +75,8 @@ namespace learn_c_sharp.Controllers
 
         }
         [HttpPut("{touristRouteId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateTouristRoute([FromRoute] Guid touristRouteId, [FromBody] TouristRouteForUpdateDto touristRouteForUpdateDto)
         {
             if (!(await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId)))
@@ -89,6 +92,8 @@ namespace learn_c_sharp.Controllers
             return NoContent();
         }
         [HttpPatch("{touristRouteId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PartiallyUpdateTouristRoute(
             [FromRoute] Guid touristRouteId,
             [FromBody] JsonPatchDocument<TouristRouteForUpdateDto> jsonPatchDocument)
@@ -110,6 +115,8 @@ namespace learn_c_sharp.Controllers
             return NoContent();
         }
         [HttpDelete("{touristRouteId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteTouristRoute([FromRoute] Guid touristRouteId)
         {
             if (!(await _touristRouteRepository.TouristRouteExistsAsync(touristRouteId)))
@@ -123,6 +130,8 @@ namespace learn_c_sharp.Controllers
             return NoContent();
         }
         [HttpDelete("({touristIDs})")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteByIDs([ModelBinder(BinderType = typeof(ArrayModelBinder))][FromRoute] IEnumerable<Guid> touristIDs)
         {
             if (touristIDs == null)
