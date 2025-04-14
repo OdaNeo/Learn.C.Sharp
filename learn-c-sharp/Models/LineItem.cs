@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace learn_c_sharp.Models
 {
-    public class LineItem
+    public class LineItem // “一行商品记录” 把“一个购物车/订单里有多件不同商品”拆成若干行，主表只管谁的购物车，行项目各自管商品明细。
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

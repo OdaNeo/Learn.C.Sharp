@@ -10,7 +10,6 @@ namespace learn_c_sharp.Profiles
         {
             CreateMap<ShoppingCart, ShoppingCartDto>();
             CreateMap<LineItem, LineItemDto>();
-
         }
     }
 }
