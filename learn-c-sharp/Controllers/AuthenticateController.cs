@@ -1,5 +1,6 @@
 ﻿using learn_c_sharp.Dtos;
 using learn_c_sharp.Models;
+using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,17 @@ namespace learn_c_sharp.Controllers
 {
     [ApiController]
     [Route("api/auth")]
-    public class AuthenticateController(IConfiguration configuration, UserManager<ApplicationUser> useManager, SignInManager<ApplicationUser> signInManager) : ControllerBase
+    public class AuthenticateController(
+        IConfiguration configuration,
+        UserManager<ApplicationUser> useManager,
+        SignInManager<ApplicationUser> signInManager,
+        ITouristRouteRepository touristRouteRepository
+    ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly UserManager<ApplicationUser> _useManager = useManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly ITouristRouteRepository _touristRouteRepository = touristRouteRepository;
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -75,6 +82,15 @@ namespace learn_c_sharp.Controllers
             {
                 return BadRequest(result);
             }
+            //初始化购物车
+            var shoppingCart = new ShoppingCart()
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+            };
+            await _touristRouteRepository.CreateShoppingCart(shoppingCart);
+            await _touristRouteRepository.SaveAsync();
+
             return Ok();
         }
     }
