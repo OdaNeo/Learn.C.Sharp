@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using learn_c_sharp.Dtos;
+using learn_c_sharp.Helper;
 using learn_c_sharp.Models;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -52,6 +53,38 @@ namespace learn_c_sharp.Controllers
             await _touristRouteRepository.SaveAsync();
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
+        }
+        [HttpDelete("items/{itemId}")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> DeleteShoppingCartItem([FromRoute] int itemId)
+        {
+            var lineItem = await _touristRouteRepository.GetShoppingCartItemByItemId(itemId);
+            if (lineItem == null)
+            {
+                return NotFound("not found");
+            }
+            _touristRouteRepository.DeleteShoppingCartItem(lineItem);
+            await _touristRouteRepository.SaveAsync();
+
+            return NoContent();
+        }
+        [HttpDelete("items/({itemIDs})")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> DeleteShoppingCartItems(
+            [ModelBinder(BinderType = typeof(ArrayModelBinder))]
+            [FromRoute] IEnumerable<int> itemIDs
+         )
+        {
+            var lineItems = await _touristRouteRepository.GetShoppingCartsByIdListAsync(itemIDs);
+            if (lineItems == null)
+            {
+                return NotFound("not found");
+            }
+
+            _touristRouteRepository.DeleteShoppingCartItems(lineItems);
+            await _touristRouteRepository.SaveAsync();
+
+            return NoContent();
         }
     }
 }
