@@ -44,12 +44,19 @@ namespace learn_c_sharp.Database
 
             // 2. 添加角色
             var adminRoleId = "308660dc-ae51-480f-824d-7dca6714c3e2"; // guid 
+            var editorRoleId = "dacc15f0-bffd-477c-aa59-27b40b93b14e";// guid 
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole
                 {
                     Id = adminRoleId,
                     Name = "Admin",
                     NormalizedName = "Admin".ToUpper()
+                },
+                new IdentityRole
+                {
+                    Id = editorRoleId,
+                    Name = "Editor",
+                    NormalizedName = "Editor".ToUpper()
                 }
             );
 

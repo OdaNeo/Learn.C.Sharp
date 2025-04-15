@@ -17,13 +17,15 @@ namespace learn_c_sharp.Controllers
         IConfiguration configuration,
         UserManager<ApplicationUser> useManager,
         SignInManager<ApplicationUser> signInManager,
-        ITouristRouteRepository touristRouteRepository
+        ITouristRouteRepository touristRouteRepository,
+        RoleManager<IdentityRole> roleManager
     ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
         private readonly UserManager<ApplicationUser> _useManager = useManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly ITouristRouteRepository _touristRouteRepository = touristRouteRepository;
+        private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -90,6 +92,18 @@ namespace learn_c_sharp.Controllers
             };
             await _touristRouteRepository.CreateShoppingCart(shoppingCart);
             await _touristRouteRepository.SaveAsync();
+
+            //绑定Editor权限
+            if (!await _roleManager.RoleExistsAsync("Editor"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole("Editor"));
+            }
+            var addRoleResult = await _useManager.AddToRoleAsync(user, "Editor");
+
+            if (!addRoleResult.Succeeded)
+            {
+                return BadRequest(addRoleResult);
+            }
 
             return Ok();
         }

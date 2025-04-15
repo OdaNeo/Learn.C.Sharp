@@ -60,7 +60,7 @@ namespace learn_c_sharp.Controllers
             //    DepartureCity = touristRouteFromRepo.DepartureCity.ToString(),
             //};
             var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
-            return Ok(touristRouteDto); 
+            return Ok(touristRouteDto);
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
