@@ -1,4 +1,4 @@
-﻿namespace FakeXiecheng.API.Models
+﻿namespace learn_c_sharp.Models
 {
     public enum TravelDays
     {

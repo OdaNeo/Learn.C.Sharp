@@ -1,5 +1,4 @@
-﻿using FakeXiecheng.API.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace learn_c_sharp.Models

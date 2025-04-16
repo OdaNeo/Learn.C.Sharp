@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using learn_c_sharp.Database;
 
@@ -11,9 +12,11 @@ using learn_c_sharp.Database;
 namespace learn_c_sharp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250416132004_OrderMigration")]
+    partial class OrderMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,16 +256,16 @@ namespace learn_c_sharp.Migrations
                         {
                             Id = "90184155-dee0-40c9-bb1e-b5ed07afc04e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "42deade0-893b-4c57-abbd-29eca3731ebb",
+                            ConcurrencyStamp = "0457d789-a87d-4ee7-a3c8-ddabfa96d993",
                             Email = "admin@fakexiecheng.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FAKEXIECHENG.COM",
                             NormalizedUserName = "ADMIN@FAKEXIECHENG.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAAGGvL1M6rRaKNEdNoZ1xPbiNlpoYnQQAZO3K8o6PpkrixBYkPhen4szjOsw5RGyw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDz9LI4m8i43NjUo87frCz6tjPTW99q1IIpJBhKyXrswhqwtt93s03jdZJl6iEITpQ==",
                             PhoneNumber = "123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "48ed6a7e-c481-46cb-baca-72427d7169b1",
+                            SecurityStamp = "501bfc4d-91c7-4a4f-844d-6e85c45ed6c1",
                             TwoFactorEnabled = false,
                             UserName = "admin@fakexiecheng.com"
                         });

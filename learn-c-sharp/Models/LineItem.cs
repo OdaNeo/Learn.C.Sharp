@@ -12,7 +12,7 @@ namespace learn_c_sharp.Models
         public Guid TouristRouteId { get; set; }
         public TouristRoute TouristRoute { get; set; }
         public Guid? ShoppingCartId { get; set; }
-        //public Guid? OrderId { get; set; }
+        public Guid? OrderId { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal OriginalPrice { get; set; }
         [Range(0.0, 1.0)]
