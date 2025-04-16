@@ -34,7 +34,7 @@ namespace learn_c_sharp.Models
         public ICollection<LineItem> OrderItems { get; set; }
         public OrderStateEnum State { get; set; }
         public DateTime CreateDateUTC { get; set; }
-        public string TransactionMetadata { get; set; }//第三方支付 json
+        public string? TransactionMetadata { get; set; }//第三方支付 json
 
         StateMachine<OrderStateEnum, OrderStateTriggerEnum> _machine;
         private void StateMachineInti()

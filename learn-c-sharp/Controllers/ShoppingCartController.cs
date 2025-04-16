@@ -86,5 +86,34 @@ namespace learn_c_sharp.Controllers
 
             return NoContent();
         }
+        [HttpPost("checkout")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        public async Task<IActionResult> Checkout()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var shoppingCart = await _touristRouteRepository.GetShoppingCartByUserId(userId);
+
+            if (shoppingCart.ShoppingCartItems == null || shoppingCart.ShoppingCartItems.Count == 0)
+            {
+                return BadRequest("shopping cart is empty");
+            }
+
+            var order = new Order()
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                State = OrderStateEnum.Pending,
+                OrderItems = shoppingCart.ShoppingCartItems,
+                CreateDateUTC = DateTime.UtcNow,
+            };
+            shoppingCart.ShoppingCartItems = null;
+
+            await _touristRouteRepository.AddOrderAsync(order);
+
+            await _touristRouteRepository.SaveAsync();
+
+            return Ok(_mapper.Map<OrderDto>(order));
+        }
     }
 }
