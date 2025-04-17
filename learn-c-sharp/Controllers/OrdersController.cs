@@ -26,6 +26,7 @@ namespace learn_c_sharp.Controllers
             return Ok(_mapper.Map<IEnumerable<OrderDto>>(orders));
             //return Ok(orders);
         }
+
         [HttpGet("{orderId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> GetOrderById([FromRoute] Guid orderId)

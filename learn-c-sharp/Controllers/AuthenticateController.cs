@@ -70,6 +70,7 @@ namespace learn_c_sharp.Controllers
 
             return Ok(tokenStr);
         }
+
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)

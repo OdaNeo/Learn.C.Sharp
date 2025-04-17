@@ -28,6 +28,7 @@ namespace learn_c_sharp.Controllers
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
         }
+
         [HttpPost("items")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> AddShoppingCartItem([FromBody] AddShoppingCartItemDto addShoppingCartItemDto)
@@ -54,6 +55,7 @@ namespace learn_c_sharp.Controllers
 
             return Ok(_mapper.Map<ShoppingCartDto>(shoppingCart));
         }
+
         [HttpDelete("items/{itemId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> DeleteShoppingCartItem([FromRoute] int itemId)
@@ -68,6 +70,7 @@ namespace learn_c_sharp.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("items/({itemIDs})")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> DeleteShoppingCartItems(
@@ -86,6 +89,7 @@ namespace learn_c_sharp.Controllers
 
             return NoContent();
         }
+
         [HttpPost("checkout")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Checkout()

@@ -21,12 +21,19 @@ namespace learn_c_sharp.Controllers
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
         }
+
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetTouristRoutes([FromQuery] TouristRouteResoureceParamaters paramates)//Core 3.x 以上，需要加问号
         {
 
-            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(paramates.Keyword, paramates.RatingOperator, paramates.RatingValue);
+            var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(
+                paramates.Keyword,
+                paramates.RatingOperator,
+                paramates.RatingValue,
+                paramates.PageSize,
+                paramates.PageNumber
+            );
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {
                 return NotFound("not found");
@@ -34,6 +41,7 @@ namespace learn_c_sharp.Controllers
             var touristRoutesDto = _mapper.Map<IEnumerable<TouristRouteDto>>(touristRoutesFromRepo);
             return Ok(touristRoutesDto);
         }
+
         [HttpGet("{touristRouteId}", Name = "GetTouristRouteById")]
         [HttpHead]
         public async Task<IActionResult> GetTouristRouteById(Guid touristRouteId)
@@ -62,6 +70,7 @@ namespace learn_c_sharp.Controllers
             var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
             return Ok(touristRouteDto);
         }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
@@ -74,6 +83,7 @@ namespace learn_c_sharp.Controllers
             return CreatedAtRoute("GetTouristRouteById", new { touristRouteId = touristRouteToReturn.Id }, touristRouteToReturn);
 
         }
+
         [HttpPut("{touristRouteId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
@@ -91,6 +101,7 @@ namespace learn_c_sharp.Controllers
             await _touristRouteRepository.SaveAsync();
             return NoContent();
         }
+
         [HttpPatch("{touristRouteId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
@@ -114,6 +125,7 @@ namespace learn_c_sharp.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("{touristRouteId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
@@ -129,6 +141,7 @@ namespace learn_c_sharp.Controllers
 
             return NoContent();
         }
+
         [HttpDelete("({touristIDs})")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]

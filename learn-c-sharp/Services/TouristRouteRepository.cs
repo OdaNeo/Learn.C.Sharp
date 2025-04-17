@@ -19,7 +19,7 @@ namespace learn_c_sharp.Services
             return await _context.TouristRouts.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == touristRouteId);
         }
 
-        public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(string keyword, string ratingOperator, int? ratingValue)
+        public async Task<IEnumerable<TouristRoute>> GetTouristRoutesAsync(string keyword, string ratingOperator, int? ratingValue, int pageSize, int pageNumber)
         {
             // 延迟执行
             IQueryable<TouristRoute> result = _context
@@ -48,6 +48,9 @@ namespace learn_c_sharp.Services
                 }
 
             }
+            var skip = (pageNumber - 1) * pageSize;
+            result = result.Skip(skip);
+            result = result.Take(pageSize);
             //立即执行
             return await result.ToListAsync();
         }

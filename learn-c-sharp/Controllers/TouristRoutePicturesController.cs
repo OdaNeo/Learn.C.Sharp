@@ -18,6 +18,7 @@ namespace learn_c_sharp.Controllers
             _touristRouteRepository = touristRouteRepository;
             _mapper = mapper;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetPictureListForTouristRoute(Guid touristRouteId)
         {
@@ -32,6 +33,7 @@ namespace learn_c_sharp.Controllers
             }
             return Ok(_mapper.Map<IEnumerable<TouristRoutePictureDto>>(pictureFromRepo));
         }
+
         [HttpGet("{pictureId}", Name = "GetPicture")]
         public async Task<IActionResult> GetPicture(Guid touristRouteId, int pictureId)
         {
@@ -46,6 +48,7 @@ namespace learn_c_sharp.Controllers
             }
             return Ok(_mapper.Map<TouristRoutePictureDto>(pictureFromRepo));
         }
+
         [HttpPost]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
@@ -64,6 +67,7 @@ namespace learn_c_sharp.Controllers
             return CreatedAtRoute(
                 "GetPicture", new { touristRouteId = pictureModel.TouristRouteId, pictureId = pictureModel.Id }, pictureToReturn);
         }
+
         [HttpDelete("{pictureId}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [Authorize(Roles = "Admin")]
