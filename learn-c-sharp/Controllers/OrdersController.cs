@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using learn_c_sharp.Dtos;
+using learn_c_sharp.ResourceParameters;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,11 @@ namespace learn_c_sharp.Controllers
 
         [HttpGet]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> GetOrders()
+        public async Task<IActionResult> GetOrders([FromQuery] PaginationResourceParameters parameters)
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var orders = await _touristRouteRepository.GetOrdersByUserId(userId);
+            var orders = await _touristRouteRepository.GetOrdersByUserId(userId, parameters.PageSize, parameters.PageNumber);
 
             return Ok(_mapper.Map<IEnumerable<OrderDto>>(orders));
             //return Ok(orders);
