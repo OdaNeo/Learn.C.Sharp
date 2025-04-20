@@ -1,18 +1,15 @@
 ﻿using learn_c_sharp.Database;
+using learn_c_sharp.Dtos;
 using learn_c_sharp.Helper;
 using learn_c_sharp.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace learn_c_sharp.Services
 {
-    public class TouristRouteRepository : ITouristRouteRepository
+    public class TouristRouteRepository(AppDbContext context, IPropertyMappingService propertyMappingService) : ITouristRouteRepository
     {
-        private readonly AppDbContext _context;
-
-        public TouristRouteRepository(AppDbContext context)
-        {
-            _context = context;
-        }
+        private readonly AppDbContext _context = context;
+        private readonly IPropertyMappingService _propertyMappingService = propertyMappingService;
 
         public async Task<TouristRoute> GetTouristRouteAsync(Guid touristRouteId)
         {
@@ -20,7 +17,14 @@ namespace learn_c_sharp.Services
             return await _context.TouristRouts.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == touristRouteId);
         }
 
-        public async Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(string keyword, string ratingOperator, int? ratingValue, int pageSize, int pageNumber)
+        public async Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
+            string keyword,
+            string ratingOperator,
+            int? ratingValue,
+            int pageSize,
+            int pageNumber,
+            string orderBy
+            )
         {
             // 延迟执行
             IQueryable<TouristRoute> result = _context
@@ -47,6 +51,13 @@ namespace learn_c_sharp.Services
                         result = result.Where(t => t.Rating == ratingValue);
                         break;
                 }
+
+            }
+            if (!string.IsNullOrWhiteSpace(orderBy))
+            {
+                var touristRouteMappingDictionary = _propertyMappingService.GetPropertyMapping<TouristRouteDto, TouristRoute>();
+
+                result = result.ApplySort(orderBy, touristRouteMappingDictionary);
 
             }
             //var skip = (pageNumber - 1) * pageSize;

@@ -14,22 +14,19 @@ namespace learn_c_sharp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TouristRoutesController : ControllerBase
+    public class TouristRoutesController(
+        ITouristRouteRepository touristRouteRepository,
+        IMapper mapper,
+        IUrlHelperFactory urlHelperFactory,
+        IActionContextAccessor actionContextAccessor,
+        IPropertyMappingService propertyMappingService
+            ) : ControllerBase
     {
-        private ITouristRouteRepository _touristRouteRepository;
-        private readonly IMapper _mapper;
-        private readonly IUrlHelper _urlHelper;
-        public TouristRoutesController(
-            ITouristRouteRepository touristRouteRepository,
-            IMapper mapper,
-            IUrlHelperFactory urlHelperFactory,
-            IActionContextAccessor actionContextAccessor
-            )
-        {
-            _touristRouteRepository = touristRouteRepository;
-            _mapper = mapper;
-            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
-        }
+        private ITouristRouteRepository _touristRouteRepository = touristRouteRepository;
+        private readonly IMapper _mapper = mapper;
+        private readonly IUrlHelper _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
+        private readonly IPropertyMappingService _propertyMappingService = propertyMappingService;
+
         private string GenericTouristRouteResourceURL(
              TouristRouteResourceParameters parameters,
              PaginationResourceParameters parameters2,
@@ -41,6 +38,7 @@ namespace learn_c_sharp.Controllers
                 ResourceUriType.PreviousPage => _urlHelper.Link("GetTouristRoutes",
                 new
                 {
+                    oriderBy = parameters.OrderBy,
                     keyword = parameters.Keyword,
                     rating = parameters.Rating,
                     pageNumber = parameters2.PageNumber - 1,
@@ -49,6 +47,7 @@ namespace learn_c_sharp.Controllers
                 ResourceUriType.NextPage => _urlHelper.Link("GetTouristRoutes",
                     new
                     {
+                        oriderBy = parameters.OrderBy,
                         keyword = parameters.Keyword,
                         rating = parameters.Rating,
                         pageNumber = parameters2.PageNumber + 1,
@@ -57,6 +56,7 @@ namespace learn_c_sharp.Controllers
                 _ => _urlHelper.Link("GetTouristRoutes",
                     new
                     {
+                        oriderBy = parameters.OrderBy,
                         keyword = parameters.Keyword,
                         rating = parameters.Rating,
                         pageNumber = parameters2.PageNumber,
@@ -73,13 +73,18 @@ namespace learn_c_sharp.Controllers
             [FromQuery] PaginationResourceParameters parameters2
             )//Core 3.x 以上，需要加问号
         {
+            if (!_propertyMappingService.IsMappingExists<TouristRouteDto, TouristRoute>(parameters.OrderBy))
+            {
+                return BadRequest("bad request");
+            }
 
             var touristRoutesFromRepo = await _touristRouteRepository.GetTouristRoutesAsync(
                 parameters.Keyword,
                 parameters.RatingOperator,
                 parameters.RatingValue,
                 parameters2.PageSize,
-                parameters2.PageNumber
+                parameters2.PageNumber,
+                parameters.OrderBy
             );
             if (touristRoutesFromRepo == null || touristRoutesFromRepo.Count() <= 0)
             {

@@ -84,6 +84,8 @@ internal class Program
 
         builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
+        builder.Services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

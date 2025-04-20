@@ -4,6 +4,7 @@ namespace learn_c_sharp.ResourceParameters
 {
     public class TouristRouteResourceParameters
     {
+        public string? OrderBy { get; set; }
         public string? Keyword { set; get; }
         public string RatingOperator { set; get; }
         public int? RatingValue { set; get; }
