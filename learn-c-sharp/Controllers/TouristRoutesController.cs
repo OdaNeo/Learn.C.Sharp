@@ -42,7 +42,8 @@ namespace learn_c_sharp.Controllers
                     keyword = parameters.Keyword,
                     rating = parameters.Rating,
                     pageNumber = parameters2.PageNumber - 1,
-                    pageSize = parameters2.PageSize
+                    pageSize = parameters2.PageSize,
+                    fields = parameters.Fields
                 }),
                 ResourceUriType.NextPage => _urlHelper.Link("GetTouristRoutes",
                     new
@@ -51,7 +52,8 @@ namespace learn_c_sharp.Controllers
                         keyword = parameters.Keyword,
                         rating = parameters.Rating,
                         pageNumber = parameters2.PageNumber + 1,
-                        pageSize = parameters2.PageSize
+                        pageSize = parameters2.PageSize,
+                        fields = parameters.Fields
                     }),
                 _ => _urlHelper.Link("GetTouristRoutes",
                     new
@@ -60,7 +62,8 @@ namespace learn_c_sharp.Controllers
                         keyword = parameters.Keyword,
                         rating = parameters.Rating,
                         pageNumber = parameters2.PageNumber,
-                        pageSize = parameters2.PageSize
+                        pageSize = parameters2.PageSize,
+                        fields = parameters.Fields
                     })
             };
 
@@ -108,12 +111,12 @@ namespace learn_c_sharp.Controllers
 
             Response.Headers.Add("x-pagination", Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetaData));
 
-            return Ok(touristRoutesDto);
+            return Ok(touristRoutesDto.ShapeData(parameters.Fields));
         }
 
         [HttpGet("{touristRouteId}", Name = "GetTouristRouteById")]
         [HttpHead]
-        public async Task<IActionResult> GetTouristRouteById(Guid touristRouteId)
+        public async Task<IActionResult> GetTouristRouteById(Guid touristRouteId, string fileds)
         {
             var touristRouteFromRepo = await _touristRouteRepository.GetTouristRouteAsync(touristRouteId);
             if (touristRouteFromRepo == null)
@@ -137,7 +140,7 @@ namespace learn_c_sharp.Controllers
             //    DepartureCity = touristRouteFromRepo.DepartureCity.ToString(),
             //};
             var touristRouteDto = _mapper.Map<TouristRouteDto>(touristRouteFromRepo);
-            return Ok(touristRouteDto);
+            return Ok(touristRouteDto.ShapeData(fileds));
         }
 
         [HttpPost]

@@ -31,5 +31,6 @@ namespace learn_c_sharp.ResourceParameters
                 return _rating;
             }
         }
+        public string? Fields { get; set; }
     }
 }
