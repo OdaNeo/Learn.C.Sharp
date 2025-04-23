@@ -11,7 +11,7 @@ namespace learn_c_sharp.Models
         [MaxLength(100)]
         public required string Url { get; set; }
         [ForeignKey("TouristRouteId")]
-        public Guid TouristRouteId { get; set; }
+        public Guid? TouristRouteId { get; set; }
         public required TouristRoute TouristRoute { get; set; }
     }
 }

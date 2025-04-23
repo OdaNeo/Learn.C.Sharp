@@ -32,6 +32,11 @@ namespace learn_c_sharp.Database
                 @"/Database/touristRoutePicturesMockData.json");
             IList<TouristRoutePicture> touristPictureRoutes = JsonConvert.DeserializeObject<IList<TouristRoutePicture>>(touristRoutePictureJsonData)!;
             modelBuilder.Entity<TouristRoutePicture>().HasData(touristPictureRoutes);
+            modelBuilder.Entity<TouristRoutePicture>()
+                .HasOne(p => p.TouristRoute)
+                .WithMany(r => r.TouristRoutePictures)
+                .HasForeignKey(p => p.TouristRouteId)
+                .OnDelete(DeleteBehavior.SetNull);
 
             // 初始化用户与角色的种子数据
             // 1. 更新用户与角色的外键关系

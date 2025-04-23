@@ -50,8 +50,8 @@ namespace learn_c_sharp.Controllers
         }
 
         [HttpPost]
-        [Authorize(AuthenticationSchemes = "Bearer")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(AuthenticationSchemes = "Bearer")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateTouristRoutePicture(
             [FromRoute] Guid touristRouteId,
             [FromBody] TouristRoutePictureFroCreationDto touristRoutePictureFroCreateDto)
