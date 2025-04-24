@@ -1,4 +1,4 @@
-using learn_c_sharp.Database;
+﻿using learn_c_sharp.Database;
 using learn_c_sharp.Models;
 using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -77,7 +77,9 @@ internal class Program
 
         builder.Services.AddDbContext<AppDbContext>(option =>
         {
-            option.UseSqlServer(connectionString);
+            option.UseSqlServer(connectionString)
+                  .EnableSensitiveDataLogging() // 打印实际参数值
+                  .LogTo(Console.WriteLine);   // 打印到控制台
         });
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

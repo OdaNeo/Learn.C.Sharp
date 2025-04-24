@@ -14,7 +14,7 @@ namespace learn_c_sharp.Services
         public async Task<TouristRoute> GetTouristRouteAsync(Guid touristRouteId)
         {
             //立即执行
-            return await _context.TouristRouts.Include(t => t.TouristRoutePictures).FirstOrDefaultAsync(n => n.Id == touristRouteId);
+            return await _context.TouristRouts.Include(t => t.TouristRoutePictures).AsNoTracking().FirstOrDefaultAsync(n => n.Id == touristRouteId);
         }
 
         public async Task<PaginationList<TouristRoute>> GetTouristRoutesAsync(
