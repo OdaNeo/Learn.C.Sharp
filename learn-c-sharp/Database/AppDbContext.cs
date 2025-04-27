@@ -24,19 +24,19 @@ namespace learn_c_sharp.Database
                 @"/Database/touristRoutesMockData.json");
             IList<TouristRoute> touristRoutes = JsonConvert.DeserializeObject<IList<TouristRoute>>(touristRouteJsonData)!;
             modelBuilder.Entity<TouristRoute>().HasData(touristRoutes);
-            modelBuilder.Entity<TouristRoute>()
-               .Property(tr => tr.CreateTime)
-               .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            //modelBuilder.Entity<TouristRoute>()
+            //   .Property(tr => tr.CreateTime)
+            //   .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
             var touristRoutePictureJsonData = File.ReadAllText(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +
                 @"/Database/touristRoutePicturesMockData.json");
             IList<TouristRoutePicture> touristPictureRoutes = JsonConvert.DeserializeObject<IList<TouristRoutePicture>>(touristRoutePictureJsonData)!;
             modelBuilder.Entity<TouristRoutePicture>().HasData(touristPictureRoutes);
-            modelBuilder.Entity<TouristRoutePicture>()
-                .HasOne(p => p.TouristRoute)
-                .WithMany(r => r.TouristRoutePictures)
-                .HasForeignKey(p => p.TouristRouteId)
-                .OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<TouristRoutePicture>()
+            //    .HasOne(p => p.TouristRoute)
+            //    .WithMany(r => r.TouristRoutePictures)
+            //    .HasForeignKey(p => p.TouristRouteId)
+            //    .OnDelete(DeleteBehavior.SetNull);
 
             // 初始化用户与角色的种子数据
             // 1. 更新用户与角色的外键关系
@@ -93,6 +93,15 @@ namespace learn_c_sharp.Database
                     UserId = adminUserId
                 });
 
+            // 5. 初始化 ShoppingCart
+            modelBuilder.Entity<ShoppingCart>()
+                .HasData(new ShoppingCart()
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = adminUserId,
+                });
+
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
             base.OnModelCreating(modelBuilder);
         }

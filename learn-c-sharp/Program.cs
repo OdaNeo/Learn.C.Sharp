@@ -77,9 +77,9 @@ internal class Program
 
         builder.Services.AddDbContext<AppDbContext>(option =>
         {
-            option.UseSqlServer(connectionString)
-                  .EnableSensitiveDataLogging() // 打印实际参数值
-                  .LogTo(Console.WriteLine);   // 打印到控制台
+            option.UseSqlServer(connectionString);
+            //.EnableSensitiveDataLogging() // 打印实际参数值
+            //.LogTo(Console.WriteLine);   // 打印到控制台
         });
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

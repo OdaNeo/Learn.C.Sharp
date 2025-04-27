@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using learn_c_sharp.Database;
 
@@ -11,9 +12,11 @@ using learn_c_sharp.Database;
 namespace learn_c_sharp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250427022000_AddNewConfig4")]
+    partial class AddNewConfig4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,16 +256,16 @@ namespace learn_c_sharp.Migrations
                         {
                             Id = "90184155-dee0-40c9-bb1e-b5ed07afc04e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6b0f8fe2-611c-48ee-b443-4a2855a30573",
+                            ConcurrencyStamp = "0fe473d0-62c9-4ae0-9df5-9455eb8f3b42",
                             Email = "admin@fakexiecheng.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@FAKEXIECHENG.COM",
                             NormalizedUserName = "ADMIN@FAKEXIECHENG.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECSRHNChe6SMJ2fwxXS4GrtsQUSAQuPY1hcvdDZqFB3ze5yb0BKj9JcQqsKSUwXuoQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMV2qk6b+62iCfXiDNFnKk51rJvV9KB1zSvGWyl2VJEA1jto+dbGsGjM+KNt3cMBMg==",
                             PhoneNumber = "123456789",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5ac49f6c-f871-4bea-92c1-6e4f5b0a9374",
+                            SecurityStamp = "269817a7-d587-4886-aff7-4bff768c393f",
                             TwoFactorEnabled = false,
                             UserName = "admin@fakexiecheng.com"
                         });
@@ -344,13 +347,6 @@ namespace learn_c_sharp.Migrations
                         .IsUnique();
 
                     b.ToTable("ShoppingCarts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("0e09d08e-0ad4-42c0-a0f2-d1c9e3c99a28"),
-                            UserId = "90184155-dee0-40c9-bb1e-b5ed07afc04e"
-                        });
                 });
 
             modelBuilder.Entity("learn_c_sharp.Models.TouristRoute", b =>

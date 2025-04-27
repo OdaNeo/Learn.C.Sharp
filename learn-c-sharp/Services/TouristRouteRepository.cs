@@ -123,6 +123,7 @@ namespace learn_c_sharp.Services
                 .Include(s => s.User)
                 .Include(s => s.ShoppingCartItems)
                 .ThenInclude(li => li.TouristRoute)
+                .ThenInclude(tr => tr.TouristRoutePictures)
                 .Where(s => s.UserId == userId)
                 .FirstOrDefaultAsync();
         }

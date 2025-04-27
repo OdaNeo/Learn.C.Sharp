@@ -39,7 +39,7 @@ namespace learn_c_sharp.Controllers
             var shoppingCart = await _touristRouteRepository.GetShoppingCartByUserId(userId);
 
             var touristRoute = await _touristRouteRepository.GetTouristRouteAsync(addShoppingCartItemDto.TouristRouteId);
-            if (touristRoute == null)
+            if (touristRoute == null || shoppingCart == null)
             {
                 return NotFound("not found");
             }
