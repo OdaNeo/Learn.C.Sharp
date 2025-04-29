@@ -158,6 +158,8 @@ namespace learn_c_sharp.Services
         public async Task<PaginationList<Order>> GetOrdersByUserId(string userId, int pageSize, int pageNumber)
         {
             IQueryable<Order> result = _context.Orders.Include(o => o.OrderItems).Where(o => o.UserId == userId);
+            string sql = result.ToQueryString();
+            Console.WriteLine("++++++++++++++++++++++++++++++" + sql + "++++++++++++++++++++++++++++++");
 
             return await PaginationList<Order>.CreateAsync(pageNumber, pageSize, (IQueryable<Order>)result);
 
