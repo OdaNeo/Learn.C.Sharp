@@ -34,7 +34,9 @@ internal class Program
                     ValidAudience = builder.Configuration["Authentication:Audience"],
 
                     ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(secretByte)
+                    IssuerSigningKey = new SymmetricSecurityKey(secretByte),
+
+                    ClockSkew = TimeSpan.Zero // 禁用默认 5 分钟容差
                 };
             });
 

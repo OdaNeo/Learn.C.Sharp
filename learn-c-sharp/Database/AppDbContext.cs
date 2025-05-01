@@ -97,7 +97,7 @@ namespace learn_c_sharp.Database
             modelBuilder.Entity<ShoppingCart>()
                 .HasData(new ShoppingCart()
                 {
-                    Id = Guid.NewGuid(),
+                    Id = new Guid("0e09d08e-0ad4-42c0-a0f2-d1c9e3c99a28"),
                     UserId = adminUserId,
                 });
 
