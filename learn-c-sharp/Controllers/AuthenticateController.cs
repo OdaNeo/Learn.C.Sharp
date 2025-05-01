@@ -36,6 +36,20 @@ namespace learn_c_sharp.Controllers
             return Convert.ToBase64String(randomNumber);
         }
 
+        private void SetRefreshTokenCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddDays(7),
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+
+
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -87,6 +101,7 @@ namespace learn_c_sharp.Controllers
 
             if (result.Succeeded)
             {
+                SetRefreshTokenCookie(refreshToken);
                 return Ok(tokenStr);
             }
             else
