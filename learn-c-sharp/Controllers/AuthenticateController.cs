@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace learn_c_sharp.Controllers
@@ -26,6 +27,15 @@ namespace learn_c_sharp.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly ITouristRouteRepository _touristRouteRepository = touristRouteRepository;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
 
         [AllowAnonymous]
         [HttpPost("login")]
@@ -62,13 +72,28 @@ namespace learn_c_sharp.Controllers
                 audience: _configuration["Authentication:Audience"],
                 claims,
                 notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddDays(1),
+                expires: DateTime.UtcNow.AddMinutes(1),
                 signingCredentials
             );
 
             var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Ok(tokenStr);
+            string refreshToken = GenerateRefreshToken();
+
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            var result = await _useManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Ok(tokenStr);
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
+
         }
 
         [AllowAnonymous]
