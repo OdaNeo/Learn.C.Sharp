@@ -4,6 +4,7 @@ using learn_c_sharp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -44,26 +45,14 @@ namespace learn_c_sharp.Controllers
                 Secure = true,
                 SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7),
+                Path = "/"
             };
 
             Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
 
-
-
-        [AllowAnonymous]
-        [HttpPost("login")]
-        public async Task<IActionResult> login([FromBody] LoginDto loginDto)
+        private async Task<string> GenerateAccessToken(ApplicationUser user)
         {
-            var loginResult = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
-
-            if (!loginResult.Succeeded)
-            {
-                return BadRequest(loginResult);
-            }
-
-            var user = await _useManager.FindByNameAsync(loginDto.Email);
-
             var signingAlgorithm = SecurityAlgorithms.HmacSha256;
             var claims = new List<Claim>
             {
@@ -92,23 +81,82 @@ namespace learn_c_sharp.Controllers
 
             var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
 
+            return tokenStr;
+        }
+
+
+
+
+        [AllowAnonymous]
+        [HttpPost("login")]
+        public async Task<IActionResult> login([FromBody] LoginDto loginDto)
+        {
+            var loginResult = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
+
+            if (!loginResult.Succeeded)
+            {
+                return BadRequest(loginResult);
+            }
+
+            var user = await _useManager.FindByNameAsync(loginDto.Email);
+
+            string accessToken = await GenerateAccessToken(user);
+
             string refreshToken = GenerateRefreshToken();
 
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(5);
 
             var result = await _useManager.UpdateAsync(user);
 
             if (result.Succeeded)
             {
-                SetRefreshTokenCookie(refreshToken);
-                return Ok(tokenStr);
+                SetRefreshTokenCookie(refreshToken);// 种 token
+
+                return Ok(accessToken);
             }
             else
             {
                 return BadRequest(result.Errors);
             }
 
+        }
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh()
+        {
+            string? refreshToken = HttpContext.Request.Cookies["refreshToken"];
+            if (refreshToken.IsNullOrEmpty())
+            {
+                return BadRequest("Missing refresh token");
+            }
+            var user = await _useManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            if (user == null)
+            {
+                return Unauthorized("Invalid refresh token");
+            }
+            if (user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return Unauthorized("refreshToken expired");
+            }
+            var newRefreshToken = GenerateRefreshToken();
+            var newAccessToken = await GenerateAccessToken(user);
+
+            user.RefreshToken = newRefreshToken;
+            //user.RefreshTokenExpiryTime = DateTime.UtcNow.AddMinutes(5);不能一直延长
+
+            var result = await _useManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                SetRefreshTokenCookie(newRefreshToken);// 种 token
+
+                return Ok(newAccessToken);
+            }
+            else
+            {
+                return BadRequest(result.Errors);
+            }
         }
 
         [AllowAnonymous]
