@@ -20,7 +20,8 @@ namespace Learn.C.Sharp.Controllers
         UserManager<ApplicationUser> useManager,
         SignInManager<ApplicationUser> signInManager,
         ITouristRouteRepository touristRouteRepository,
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole> roleManager,
+        ILogger<AuthenticateController> logger
     ) : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
@@ -28,6 +29,7 @@ namespace Learn.C.Sharp.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly ITouristRouteRepository _touristRouteRepository = touristRouteRepository;
         private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+        private readonly ILogger<AuthenticateController> _logger = logger;
 
         private string GenerateRefreshToken()
         {
@@ -91,6 +93,8 @@ namespace Learn.C.Sharp.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> login([FromBody] LoginDto loginDto)
         {
+            _logger.LogInformation("login start 开始登陆");
+
             var loginResult = await _signInManager.PasswordSignInAsync(loginDto.Email, loginDto.Password, false, false);
 
             if (!loginResult.Succeeded)

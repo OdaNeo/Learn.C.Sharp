@@ -8,112 +8,135 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
+using Serilog;
+using Serilog.Formatting.Compact;
 using System.Text;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
-        var builder = WebApplication.CreateBuilder(args);
+        Log.Logger = new LoggerConfiguration()
+           .MinimumLevel.Information()
+           .Enrich.FromLogContext()
+           .WriteTo.Console(new RenderedCompactJsonFormatter())
+           .CreateLogger();
 
-        // Add services to the container.
-        //builder.Services.AddRazorPages();
-        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-            .AddEntityFrameworkStores<AppDbContext>();
-
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                var secretByte = Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"]!);
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = builder.Configuration["Authentication:Issuer"],
-
-                    ValidateAudience = true,
-                    ValidAudience = builder.Configuration["Authentication:Audience"],
-
-                    ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(secretByte),
-
-                    ClockSkew = TimeSpan.Zero // 禁用默认 5 分钟容差
-                };
-            });
-
-        builder.Services.AddControllers((setupAction) =>
+        try
         {
-            setupAction.ReturnHttpNotAcceptable = true;
-            //setupAction.OutputFormatters.Add(
-            //    new XmlDataContractSerializerOutputFormatter()
-            //);   
-        })
-            .AddNewtonsoftJson(setupAction =>
+            var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddLogging(logBuilder =>
             {
-                setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                logBuilder.AddSerilog();
+            });
+            // Add services to the container.
+            //builder.Services.AddRazorPages();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    var secretByte = Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"]!);
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration["Authentication:Issuer"],
+
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration["Authentication:Audience"],
+
+                        ValidateLifetime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(secretByte),
+
+                        ClockSkew = TimeSpan.Zero // 禁用默认 5 分钟容差
+                    };
+                });
+
+            builder.Services.AddControllers((setupAction) =>
+            {
+                setupAction.ReturnHttpNotAcceptable = true;
+                //setupAction.OutputFormatters.Add(
+                //    new XmlDataContractSerializerOutputFormatter()
+                //);   
             })
-            .AddXmlDataContractSerializerFormatters()
-            .ConfigureApiBehaviorOptions(setupAction =>
-            {
-                setupAction.InvalidModelStateResponseFactory = context =>
+                .AddNewtonsoftJson(setupAction =>
                 {
-                    var problemDetail = new ValidationProblemDetails(context.ModelState)
+                    setupAction.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                })
+                .AddXmlDataContractSerializerFormatters()
+                .ConfigureApiBehaviorOptions(setupAction =>
+                {
+                    setupAction.InvalidModelStateResponseFactory = context =>
                     {
-                        Type = "wusuowei",
-                        Title = "validat falied",
-                        Status = StatusCodes.Status422UnprocessableEntity,
-                        Detail = "see detail",
-                        Instance = context.HttpContext.Request.Path
+                        var problemDetail = new ValidationProblemDetails(context.ModelState)
+                        {
+                            Type = "wusuowei",
+                            Title = "validat falied",
+                            Status = StatusCodes.Status422UnprocessableEntity,
+                            Detail = "see detail",
+                            Instance = context.HttpContext.Request.Path
+                        };
+                        problemDetail.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
+                        return new UnprocessableEntityObjectResult(problemDetail)
+                        {
+                            ContentTypes = { "application/problem+json" }
+                        };
                     };
-                    problemDetail.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
-                    return new UnprocessableEntityObjectResult(problemDetail)
-                    {
-                        ContentTypes = { "application/problem+json" }
-                    };
-                };
+                });
+
+            builder.Services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
+
+            string connectionString = builder.Configuration["DbContext:ConnectionString"] ??
+                throw new InvalidOperationException("Database connection string not found!");
+
+            builder.Services.AddDbContext<AppDbContext>(option =>
+            {
+                option.UseSqlServer(connectionString);
+                //.EnableSensitiveDataLogging() // 打印实际参数值
+                //.LogTo(Console.WriteLine);   // 打印到控制台
             });
 
-        builder.Services.AddTransient<ITouristRouteRepository, TouristRouteRepository>();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-        string connectionString = builder.Configuration["DbContext:ConnectionString"] ??
-            throw new InvalidOperationException("Database connection string not found!");
+            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-        builder.Services.AddDbContext<AppDbContext>(option =>
-        {
-            option.UseSqlServer(connectionString);
-            //.EnableSensitiveDataLogging() // 打印实际参数值
-            //.LogTo(Console.WriteLine);   // 打印到控制台
-        });
+            builder.Services.AddTransient<IPropertyMappingService, PropertyMappingService>();
 
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            var app = builder.Build();
 
-        builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            // Configure the HTTP request pipeline.
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
-        builder.Services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+            app.UseHttpsRedirection();
+            //app.UseStaticFiles();
 
-        var app = builder.Build();
+            app.UseRouting();
 
-        // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
-        {
-            app.UseExceptionHandler("/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
+
+            app.MapControllers();
+
+            //app.MapRazorPages();
+
+            app.Run();
         }
-
-        app.UseHttpsRedirection();
-        //app.UseStaticFiles();
-
-        app.UseRouting();
-
-        app.UseAuthentication();
-
-        app.UseAuthorization();
-
-
-        app.MapControllers();
-
-        //app.MapRazorPages();
-
-        app.Run();
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Application terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 }
