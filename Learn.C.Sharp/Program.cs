@@ -101,7 +101,7 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        //app.UseStaticFiles();
 
         app.UseRouting();
 
