@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Learn.C.Sharp.Dtos
 {
     [TouristRouteTitleMustBeDifferentFromDescriptionAttribute]
-    public abstract class TouristRouteForManipulationDto
+    public abstract class TouristRouteForManipulationDto // IValidatableObject
     {
-        [Required(ErrorMessage = "title bukeweikong")]
+        [Required(ErrorMessage = "title bukeweikong")]// 报错来自于DTO而不是数据库，更安全
         [MaxLength(100)]
         public string Title { get; set; }
         [Required]

@@ -119,9 +119,9 @@ internal class Program
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseAuthentication();// 身份验证
 
-            app.UseAuthorization();
+            app.UseAuthorization();// 权限
 
 
             app.MapControllers();
