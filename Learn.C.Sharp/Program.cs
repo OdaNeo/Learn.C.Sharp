@@ -123,6 +123,7 @@ internal class Program
 
             app.UseAuthorization();// 权限
 
+            //app.UseResponseCaching();// 服务端缓存，同样也受 [ResponseCache(Duration = 60)] 影响
 
             app.MapControllers();
 

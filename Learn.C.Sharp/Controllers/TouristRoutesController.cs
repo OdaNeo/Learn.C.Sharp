@@ -70,6 +70,7 @@ namespace Learn.C.Sharp.Controllers
         }
 
         [HttpGet(Name = "GetTouristRoutes")]
+        [ResponseCache(Duration = 60)]  // max-age=60
         [HttpHead]
         public async Task<IActionResult> GetTouristRoutes(
             [FromQuery] TouristRouteResourceParameters parameters,
